@@ -1,0 +1,28 @@
+substitutions:
+  _REGION: europe-west4
+  _GCR_HOST: eu.gcr.io
+
+timeout: 1200s
+
+steps:
+# Build & push docker container image
+- name: 'gcr.io/kaniko-project/executor:latest'
+  id: 'docker-build'
+  args:
+  - '--destination=$_GCR_HOST/$PROJECT_ID/$REPO_NAME:latest'
+  - '--destination=$_GCR_HOST/$PROJECT_ID/$REPO_NAME:$SHORT_SHA'
+  - '--cache=true'
+  - '--cache-ttl=6h'
+
+# Deploy to Cloud Run
+- name: 'gcr.io/cloud-builders/gcloud'
+  waitFor:
+    - 'docker-build'
+  args:
+  - 'run'
+  - 'services'
+  - 'update'
+  - '$REPO_NAME'
+  - '--platform=managed'
+  - '--region=$_REGION'
+  - '--image=$_GCR_HOST/$PROJECT_ID/$REPO_NAME:$SHORT_SHA'
