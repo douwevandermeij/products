@@ -1,7 +1,7 @@
+from fractal.contrib.gcp.firestore.repositories import FirestoreRepositoryDictMixin
 from fractal.core.repositories.inmemory_repository_mixin import InMemoryRepositoryMixin
 from fractal.core.specifications.generic.specification import Specification
 
-from app.service.adapters.utils import FirestoreRepositoryDictMixin
 from app.service.domain.products import (
     Product,
     ProductNotFoundException,

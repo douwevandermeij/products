@@ -47,9 +47,9 @@ class ApplicationContext(BaseContext):
 
     def load_internal_services(self):
         if not Settings().SECRET_KEY:
-            from fractal.contrib.tokens.services import DummyJsonTokenService
+            from fractal.contrib.tokens.services import DummyTokenService
 
-            self.token_service = DummyJsonTokenService()
+            self.token_service = DummyTokenService()
         else:
             from fractal.contrib.tokens.services import SymmetricJwtTokenService
 

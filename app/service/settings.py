@@ -10,7 +10,9 @@ class Settings(BaseSettings):
 
     def load(self):
         self.WEBSITE_HOST = os.getenv("WEBSITE_HOST", "http://localhost:8000")
-        self.ALLOW_ORIGINS = os.getenv("ALLOW_ORIGINS", ",".join(["http://localhost", self.WEBSITE_HOST]))
+        self.ALLOW_ORIGINS = os.getenv(
+            "ALLOW_ORIGINS", ",".join(["http://localhost", self.WEBSITE_HOST])
+        )
 
         self.SECRET_KEY = os.getenv("SECRET_KEY", "")
 

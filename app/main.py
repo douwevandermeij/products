@@ -8,7 +8,9 @@ fractal = ProductFractal()
 
 app = install_fastapi(fractal.settings)
 
-app.include_router(inject_default_routes(fractal.context), tags=["default"])
+app.include_router(
+    inject_default_routes(fractal.context, fractal.settings), tags=["default"]
+)
 
 app.include_router(products.router, tags=["products"])
 
