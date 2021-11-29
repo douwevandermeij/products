@@ -3,11 +3,11 @@
 ## Prerequisites
 
 Ensure you have `Python 3.8` and `pipenv` installed.
+Or use Docker.
 
 ## Development
 
 Run `pipenv install` in the root directory.
-Or use Docker.
 
 ## Run the application
 
