@@ -84,11 +84,11 @@ Run `black .` and `isort .` from time to time in the root directory.
 - Edit & deploy new revision
 - Variables & secrets
 - Reference a secret
-- SECRET_KEY, latest version, exposed as environment variable
+  - SECRET_KEY, latest version, exposed as environment variable
 - Done
 - Add variable
-- ALLOW_ORIGINS, http://localhost
-- PRODUCT_REPOSITORY_BACKEND, firestore
+  - ALLOW_ORIGINS, http://localhost
+  - PRODUCT_REPOSITORY_BACKEND, firestore
 - Deploy
 - Fix error by adding a role to the secret in the secret manager
 - Edit & deploy new revision
