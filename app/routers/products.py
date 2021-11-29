@@ -19,15 +19,14 @@ fractal = ProductFractal()
 
 
 class ProductContract(BaseModel):
+    id: Optional[str] = None
     name: str
     price: Decimal
 
-    def to_product(self, *, account_id: UUID, product_id: Optional[UUID] = None):
-        return Product(
-            id=str(product_id) if product_id else str(uuid.uuid4()),
-            account_id=str(account_id),
-            **self.dict()
-        )
+    def to_product(self, *, account_id: UUID):
+        if not self.id:
+            self.id = str(uuid.uuid4())
+        return Product(account_id=str(account_id), **self.dict())
 
 
 @router.post(
@@ -67,8 +66,16 @@ def update_product(
     product: ProductContract,
     payload: TokenPayload = Depends(get_payload(fractal)),
 ):
+    assert (
+        fractal.context.product_repository.find_one(
+            AccountIdSpecification(str(payload.account)).And(
+                IdSpecification(str(product_id))
+            )
+        ).id
+        == product.id
+    )
     return fractal.context.product_repository.update(
-        product.to_product(account_id=payload.account, product_id=product_id)
+        product.to_product(account_id=payload.account)
     )
 
 

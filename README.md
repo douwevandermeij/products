@@ -1,3 +1,40 @@
+# Products service
+
+## Prerequisites
+
+Ensure you have `Python 3.8` and `pipenv` installed.
+
+## Development
+
+Run `pipenv install` in the root directory.
+Or use Docker.
+
+## Run the application
+
+    pipenv shell
+    uvicorn app.main:app --reload
+
+Or
+
+    pipenv run uvicorn app.main:app --reload
+
+### Docker
+
+    docker-compose up --build
+
+## API docs
+
+Go to `http://localhost:8000/docs` or `http://localhost:8000/redoc`.
+
+## Extending / development
+
+When adding dependencies in Pipfile, make sure to run `pipenv update`.
+
+## Tests
+
+Run `pytest` in the root directory.
+To see coverage report run `pytest --cov app`.
+
 ## Nice code
 
 Run `black .` and `isort .` from time to time in the root directory.
