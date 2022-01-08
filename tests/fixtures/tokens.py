@@ -1,4 +1,3 @@
-import uuid
 from types import SimpleNamespace
 
 import pytest
@@ -8,7 +7,7 @@ import pytest
 def account():
     return SimpleNamespace(
         **{
-            "id": str(uuid.uuid4()),
+            "id": "00000000-0000-0000-0000-000000000000",
         }
     )
 
@@ -17,7 +16,7 @@ def account():
 def user():
     return SimpleNamespace(
         **{
-            "id": str(uuid.uuid4()),
+            "id": "00000000-0000-0000-0000-000000000000",
         }
     )
 
@@ -28,5 +27,17 @@ def token(fractal, user, account):
         {
             "sub": user.id,
             "account": account.id,
+            "roles": ["user"],
+        }
+    )
+
+
+@pytest.fixture
+def admin_token(fractal, user, account):
+    return fractal.context.token_service.generate(
+        {
+            "sub": user.id,
+            "account": account.id,
+            "roles": ["admin"],
         }
     )

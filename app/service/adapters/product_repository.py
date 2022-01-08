@@ -1,20 +1,10 @@
+from app.service.domain.products import Product, ProductRepository
 from fractal.contrib.gcp.firestore.repositories import FirestoreRepositoryDictMixin
 from fractal.core.repositories.inmemory_repository_mixin import InMemoryRepositoryMixin
-from fractal.core.specifications.generic.specification import Specification
-
-from app.service.domain.products import (
-    Product,
-    ProductNotFoundException,
-    ProductRepository,
-)
 
 
 class InMemoryProductRepository(ProductRepository, InMemoryRepositoryMixin[Product]):
-    def find_one(self, specification: Specification) -> Product:
-        obj = super(InMemoryProductRepository, self).find_one(specification)
-        if not obj:
-            raise ProductNotFoundException
-        return obj
+    pass
 
 
 class FirestoreProductRepository(

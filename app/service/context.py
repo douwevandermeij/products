@@ -1,8 +1,7 @@
 from typing import Optional
 
-from fractal.core.utils.application_context import ApplicationContext as BaseContext
-
 from app.service.settings import Settings
+from fractal.core.utils.application_context import ApplicationContext as BaseContext
 
 
 class ApplicationContext(BaseContext):
@@ -47,9 +46,9 @@ class ApplicationContext(BaseContext):
 
     def load_internal_services(self):
         if not Settings().SECRET_KEY:
-            from fractal.contrib.tokens.services import DummyTokenService
+            from fractal.contrib.tokens.services import StaticTokenService
 
-            self.token_service = DummyTokenService()
+            self.token_service = StaticTokenService()
         else:
             from fractal.contrib.tokens.services import SymmetricJwtTokenService
 
@@ -60,3 +59,15 @@ class ApplicationContext(BaseContext):
 
     def load_command_bus(self):
         super(ApplicationContext, self).load_command_bus()
+
+        from app.service.domain.commands.products.add import AddProductCommandHandler
+        from app.service.domain.commands.products.delete import (
+            DeleteProductCommandHandler,
+        )
+        from app.service.domain.commands.products.update import (
+            UpdateProductCommandHandler,
+        )
+
+        AddProductCommandHandler.install(self)
+        UpdateProductCommandHandler.install(self)
+        DeleteProductCommandHandler.install(self)

@@ -1,3 +1,3 @@
 class Routes:
     PRODUCTS = "/products"
-    PRODUCT = "/products/{product_id}"
+    PRODUCT = "/products/{entity_id}"

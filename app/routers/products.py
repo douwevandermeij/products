@@ -1,91 +1,43 @@
-import uuid
 from decimal import Decimal
-from typing import List, Optional
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, status
-from fractal.contrib.fastapi.routers.tokens import get_payload
-from fractal.contrib.tokens.models import TokenPayload
-from fractal.core.specifications.account_id_specification import AccountIdSpecification
-from fractal.core.specifications.id_specification import IdSpecification
 from pydantic import BaseModel
 
+from app import fractal
 from app.routers import Routes
+from app.service.domain.commands.products.add import AddProductCommand
+from app.service.domain.commands.products.delete import DeleteProductCommand
+from app.service.domain.commands.products.update import UpdateProductCommand
 from app.service.domain.products import Product
-from app.service.main import ProductFractal
-
-router = APIRouter()
-fractal = ProductFractal()
+from fractal.contrib.fastapi.routers.default import inject_default_rest_routes
 
 
 class ProductContract(BaseModel):
-    id: Optional[str] = None
     name: str
     price: Decimal
 
-    def to_product(self, *, account_id: UUID):
-        if not self.id:
-            self.id = str(uuid.uuid4())
+    def to_entity(self, *, account_id: UUID, **kwargs):
+        if "id" in kwargs:
+            return Product(
+                id=str(kwargs["id"]), account_id=str(account_id), **self.dict()
+            )
         return Product(account_id=str(account_id), **self.dict())
 
 
-@router.post(
-    Routes.PRODUCTS, response_model=Product, status_code=status.HTTP_201_CREATED
+router = inject_default_rest_routes(
+    fractal,
+    domain_entity_class=Product,
+    entities_route=Routes.PRODUCTS,
+    entity_route=Routes.PRODUCT,
+    entity_repository_name="product_repository",
+    entity_contract=ProductContract,
+    search_fields=["name"],
+    add_entity_command=AddProductCommand,
+    update_entity_command=UpdateProductCommand,
+    delete_entity_command=DeleteProductCommand,
+    roles=dict(
+        add=["user"],
+        update=["user"],
+        delete=["user"],
+    ),
 )
-def add_product(
-    product: ProductContract, payload: TokenPayload = Depends(get_payload(fractal))
-):
-    return fractal.context.product_repository.add(
-        product.to_product(account_id=payload.account)
-    )
-
-
-@router.get(
-    Routes.PRODUCTS, response_model=List[Product], status_code=status.HTTP_200_OK
-)
-def products(payload: TokenPayload = Depends(get_payload(fractal))):
-    return list(
-        fractal.context.product_repository.find(
-            AccountIdSpecification(str(payload.account))
-        )
-    )
-
-
-@router.get(Routes.PRODUCT, response_model=Product, status_code=status.HTTP_200_OK)
-def product(product_id: UUID, payload: TokenPayload = Depends(get_payload(fractal))):
-    return fractal.context.product_repository.find_one(
-        AccountIdSpecification(str(payload.account)).And(
-            IdSpecification(str(product_id))
-        )
-    )
-
-
-@router.put(Routes.PRODUCT, response_model=Product, status_code=status.HTTP_200_OK)
-def update_product(
-    product_id: UUID,
-    product: ProductContract,
-    payload: TokenPayload = Depends(get_payload(fractal)),
-):
-    assert (
-        fractal.context.product_repository.find_one(
-            AccountIdSpecification(str(payload.account)).And(
-                IdSpecification(str(product_id))
-            )
-        ).id
-        == product.id
-    )
-    return fractal.context.product_repository.update(
-        product.to_product(account_id=payload.account)
-    )
-
-
-@router.delete(Routes.PRODUCT, response_model=str, status_code=status.HTTP_200_OK)
-def delete_product(
-    product_id: UUID, payload: TokenPayload = Depends(get_payload(fractal))
-):
-    fractal.context.product_repository.remove_one(
-        AccountIdSpecification(str(payload.account)).And(
-            IdSpecification(str(product_id))
-        )
-    )
-    return "ok"

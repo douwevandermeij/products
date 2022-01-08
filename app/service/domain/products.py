@@ -2,10 +2,12 @@ from abc import ABC
 from dataclasses import dataclass  # NOQA
 from decimal import Decimal
 
+from pydantic.dataclasses import dataclass
+
 from fractal.core.exceptions import DomainException
 from fractal.core.models import Model
 from fractal.core.repositories import Repository
-from pydantic.dataclasses import dataclass
+from fractal.core.repositories.filter_repository_mixin import FilterRepositoryMixin
 
 
 @dataclass
@@ -26,5 +28,5 @@ class ProductNotFoundException(DomainException):
         super(ProductNotFoundException, self).__init__(message)
 
 
-class ProductRepository(Repository[Product], ABC):
-    entity = Product
+class ProductRepository(FilterRepositoryMixin[Product], Repository[Product], ABC):
+    object_not_found_exception = ProductNotFoundException

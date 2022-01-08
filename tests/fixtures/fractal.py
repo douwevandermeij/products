@@ -13,9 +13,9 @@ def reset(fractal, settings):
 
 @pytest.fixture(autouse=True)
 def fractal(request):
-    from app.service.main import ProductFractal as Fractal
+    from app.service.main import ApplicationFractal
 
-    service = Fractal()
+    service = ApplicationFractal()
 
     marker = request.node.get_closest_marker("settings")
     if marker:
