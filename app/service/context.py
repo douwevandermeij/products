@@ -44,6 +44,49 @@ class ApplicationContext(BaseContext):
                 InMemoryProductRepository(),
             )
 
+        if Settings().EVENT_STORE_BACKEND == "firestore":
+            from fractal.contrib.gcp.firestore.event_store import (
+                FirestoreEventStoreRepository,
+            )
+            from fractal.core.event_sourcing.event_store import EventStoreRepository
+
+            self.event_store_repository: EventStoreRepository = (
+                FirestoreEventStoreRepository(get_firestore_client())
+            )
+
+            from app.service.domain.products import events as product_events
+            from fractal.contrib.fastapi.utils.json_encoder import (
+                BaseModelEnhancedEncoder,
+            )
+            from fractal.core.event_sourcing.event_store import (
+                EventStore,
+                JsonEventStore,
+            )
+
+            self.event_store: EventStore = JsonEventStore(
+                event_store_repository=self.event_store_repository,
+                events=product_events.get_all(),
+                json_encoder=BaseModelEnhancedEncoder,
+            )
+        else:
+            from fractal.core.event_sourcing.event_store import (
+                EventStoreRepository,
+                InMemoryEventStoreRepository,
+            )
+
+            self.event_store_repository: EventStoreRepository = (
+                InMemoryEventStoreRepository()
+            )
+
+            from fractal.core.event_sourcing.event_store import (
+                EventStore,
+                ObjectEventStore,
+            )
+
+            self.event_store: EventStore = ObjectEventStore(
+                event_store_repository=self.event_store_repository,
+            )
+
     def load_internal_services(self):
         if not Settings().SECRET_KEY:
             from fractal.contrib.tokens.services import StaticTokenService
@@ -60,14 +103,37 @@ class ApplicationContext(BaseContext):
     def load_command_bus(self):
         super(ApplicationContext, self).load_command_bus()
 
-        from app.service.domain.commands.products.add import AddProductCommandHandler
-        from app.service.domain.commands.products.delete import (
+        from app.service.domain.products.commands.add import AddProductCommandHandler
+        from app.service.domain.products.commands.delete import (
             DeleteProductCommandHandler,
         )
-        from app.service.domain.commands.products.update import (
+        from app.service.domain.products.commands.update import (
             UpdateProductCommandHandler,
         )
 
         AddProductCommandHandler.install(self)
         UpdateProductCommandHandler.install(self)
         DeleteProductCommandHandler.install(self)
+
+    def load_event_projectors(self):
+        from app.service.domain.products.events import ProductEventCommandMapper
+        from fractal.core.event_sourcing.projectors.command_bus_projector import (
+            CommandBusProjector,
+        )
+        from fractal.core.event_sourcing.projectors.event_store_projector import (
+            EventStoreProjector,
+        )
+        from fractal.core.event_sourcing.projectors.print_projector import (
+            PrintEventProjector,
+        )
+
+        return [
+            CommandBusProjector(
+                lambda: self.command_bus,
+                [
+                    ProductEventCommandMapper(),
+                ],
+            ),
+            EventStoreProjector(self.event_store),
+            PrintEventProjector(),
+        ]

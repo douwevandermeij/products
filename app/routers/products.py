@@ -5,10 +5,10 @@ from pydantic import BaseModel
 
 from app import fractal
 from app.routers import Routes
-from app.service.domain.commands.products.add import AddProductCommand
-from app.service.domain.commands.products.delete import DeleteProductCommand
-from app.service.domain.commands.products.update import UpdateProductCommand
 from app.service.domain.products import Product
+from app.service.domain.products.commands.add import AddProductCommand
+from app.service.domain.products.commands.delete import DeleteProductCommand
+from app.service.domain.products.commands.update import UpdateProductCommand
 from fractal.contrib.fastapi.routers.default import inject_default_rest_routes
 
 

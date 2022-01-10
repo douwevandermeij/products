@@ -17,5 +17,6 @@ class Settings(BaseSettings):
         self.SECRET_KEY = os.getenv("SECRET_KEY", "")
 
         self.PRODUCT_REPOSITORY_BACKEND = os.getenv("PRODUCT_REPOSITORY_BACKEND", "")
+        self.EVENT_STORE_BACKEND = os.getenv("EVENT_STORE_BACKEND", "")
 
         self.GCP_SERVICE_ACCOUNT_KEY = os.getenv("GCP_SERVICE_ACCOUNT_KEY", "")
