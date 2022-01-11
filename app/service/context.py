@@ -100,6 +100,12 @@ class ApplicationContext(BaseContext):
                 secret=Settings().SECRET_KEY,
             )
 
+    def load_ingress_services(self):
+        from app.service.domain.products.ingress import ProductService
+
+        self.product_service: ProductService
+        self.install_service(ProductService, name="product_service")
+
     def load_command_bus(self):
         super(ApplicationContext, self).load_command_bus()
 
@@ -120,6 +126,14 @@ class ApplicationContext(BaseContext):
         from fractal.core.event_sourcing.projectors.command_bus_projector import (
             CommandBusProjector,
         )
+
+        self.command_bus_projector = CommandBusProjector(
+            lambda: self.command_bus,
+            [
+                ProductEventCommandMapper(),
+            ],
+        )
+
         from fractal.core.event_sourcing.projectors.event_store_projector import (
             EventStoreProjector,
         )
@@ -128,12 +142,7 @@ class ApplicationContext(BaseContext):
         )
 
         return [
-            CommandBusProjector(
-                lambda: self.command_bus,
-                [
-                    ProductEventCommandMapper(),
-                ],
-            ),
+            self.command_bus_projector,
             EventStoreProjector(self.event_store),
             PrintEventProjector(),
         ]

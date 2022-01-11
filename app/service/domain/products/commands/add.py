@@ -11,7 +11,7 @@ from fractal.core.event_sourcing.event_publisher import EventPublisher
 
 @dataclass
 class AddProductCommand(AddEntityCommand[Product]):
-    pass
+    user_id: str
 
 
 class AddProductCommandHandler(CommandHandler):

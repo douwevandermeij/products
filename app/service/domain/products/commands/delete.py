@@ -10,7 +10,7 @@ from fractal.core.event_sourcing.event_publisher import EventPublisher
 
 @dataclass
 class DeleteProductCommand(DeleteEntityCommand[Product]):
-    pass
+    user_id: str
 
 
 class DeleteProductCommandHandler(CommandHandler):
