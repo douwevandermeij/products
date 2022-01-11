@@ -1,7 +1,8 @@
 from typing import Optional
 
-from app.service.settings import Settings
 from fractal.core.utils.application_context import ApplicationContext as BaseContext
+
+from app.service.settings import Settings
 
 
 class ApplicationContext(BaseContext):
@@ -54,7 +55,6 @@ class ApplicationContext(BaseContext):
                 FirestoreEventStoreRepository(get_firestore_client())
             )
 
-            from app.service.domain.products import events as product_events
             from fractal.contrib.fastapi.utils.json_encoder import (
                 BaseModelEnhancedEncoder,
             )
@@ -62,6 +62,8 @@ class ApplicationContext(BaseContext):
                 EventStore,
                 JsonEventStore,
             )
+
+            from app.service.domain.products import events as product_events
 
             self.event_store: EventStore = JsonEventStore(
                 event_store_repository=self.event_store_repository,
@@ -122,10 +124,11 @@ class ApplicationContext(BaseContext):
         DeleteProductCommandHandler.install(self)
 
     def load_event_projectors(self):
-        from app.service.domain.products.events import ProductEventCommandMapper
         from fractal.core.event_sourcing.projectors.command_bus_projector import (
             CommandBusProjector,
         )
+
+        from app.service.domain.products.events import ProductEventCommandMapper
 
         self.command_bus_projector = CommandBusProjector(
             lambda: self.command_bus,

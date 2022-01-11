@@ -36,9 +36,10 @@ def test_update_product(fractal, product, user):
 
 
 def test_delete_product(fractal, product, user):
+    from fractal.core.specifications.id_specification import IdSpecification
+
     from app.service.domain.products.commands.add import AddProductCommand
     from app.service.domain.products.commands.delete import DeleteProductCommand
-    from fractal.core.specifications.id_specification import IdSpecification
 
     fractal.context.command_bus.handle(
         AddProductCommand(entity=product, user_id=user.id)

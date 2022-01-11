@@ -1,11 +1,12 @@
 from dataclasses import dataclass
 
-from app.service.context import ApplicationContext
-from app.service.domain.products import Product, ProductRepository
-from app.service.domain.products.events import ProductDeletedEvent
 from fractal.core.command_bus.command_handler import CommandHandler
 from fractal.core.command_bus.commands import DeleteEntityCommand
 from fractal.core.event_sourcing.event_publisher import EventPublisher
+
+from app.service.context import ApplicationContext
+from app.service.domain.products import Product, ProductRepository
+from app.service.domain.products.events import ProductDeletedEvent
 
 
 @dataclass

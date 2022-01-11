@@ -2,12 +2,11 @@ from abc import ABC
 from dataclasses import dataclass  # NOQA
 from decimal import Decimal
 
-from pydantic.dataclasses import dataclass
-
 from fractal.core.exceptions import DomainException
 from fractal.core.models import Model
 from fractal.core.repositories import Repository
 from fractal.core.repositories.filter_repository_mixin import FilterRepositoryMixin
+from pydantic.dataclasses import dataclass
 
 
 @dataclass

@@ -1,13 +1,14 @@
-from app.service.context import ApplicationContext
-from app.service.domain.products import Product, ProductRepository
-from app.service.domain.products.commands.add import AddProductCommand
-from app.service.domain.products.commands.delete import DeleteProductCommand
-from app.service.domain.products.commands.update import UpdateProductCommand
 from fractal.core.command_bus.command_bus import CommandBus
 from fractal.core.repositories.filter_repository_mixin import FilterRepositoryMixin
 from fractal.core.services import Service
 from fractal.core.specifications.account_id_specification import AccountIdSpecification
 from fractal.core.specifications.id_specification import IdSpecification
+
+from app.service.context import ApplicationContext
+from app.service.domain.products import Product, ProductRepository
+from app.service.domain.products.commands.add import AddProductCommand
+from app.service.domain.products.commands.delete import DeleteProductCommand
+from app.service.domain.products.commands.update import UpdateProductCommand
 
 
 class ProductService(Service):

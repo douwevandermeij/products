@@ -1,12 +1,13 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from app.service.context import ApplicationContext
-from app.service.domain.products import Product, ProductRepository
-from app.service.domain.products.events import ProductUpdatedEvent
 from fractal.core.command_bus.command_handler import CommandHandler
 from fractal.core.command_bus.commands import UpdateEntityCommand
 from fractal.core.event_sourcing.event_publisher import EventPublisher
+
+from app.service.context import ApplicationContext
+from app.service.domain.products import Product, ProductRepository
+from app.service.domain.products.events import ProductUpdatedEvent
 
 
 @dataclass

@@ -1,7 +1,8 @@
-from app.routers import products
-from app.service.main import ApplicationFractal
 from fractal.contrib.fastapi.install import install_fastapi
 from fractal.contrib.fastapi.routers.default import inject_default_routes
+
+from app.routers import products
+from app.service.main import ApplicationFractal
 
 fractal = ApplicationFractal()
 

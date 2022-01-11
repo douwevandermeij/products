@@ -3,15 +3,15 @@ from decimal import Decimal
 from typing import Dict, Optional
 from uuid import UUID
 
+from fractal.contrib.fastapi.routers.default import (
+    DefaultRestRouterService,
+    inject_default_rest_routes,
+)
 from pydantic import BaseModel
 
 from app import fractal
 from app.routers import Routes
 from app.service.domain.products import Product
-from fractal.contrib.fastapi.routers.default import (
-    DefaultRestRouterService,
-    inject_default_rest_routes,
-)
 
 
 class ProductContract(BaseModel):
